@@ -15,6 +15,16 @@ jobs:
       - name: Check out release source
         uses: actions/checkout@v4
 
+      - name: Remove malformed duplicate assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for asset in "_._API101.apk" "_._API102.apk"; do
+            gh release delete-asset "${GITHUB_REF_NAME}" "${asset}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --yes || true
+          done
+
       - name: Upload APKs to the existing release
         env:
           GH_TOKEN: ${{ github.token }}
